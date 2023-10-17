@@ -1,0 +1,73 @@
+INSERT INTO floristeria (id, nom) VALUES (null, "floristeria1");
+
+-- afegir arbre
+
+"INSERT INTO producte(id) VALUES(NULL);"
+"SELECT LAST_INSERT_ID();"
+"INSERT INTO arbre (id, preu, alcada, floristeriaId) VALUES(?,?,?,1);"
+
+-- afegir flor
+
+"INSERT INTO producte(id) VALUES(NULL);"
+"SELECT LAST_INSERT_ID();"
+"INSERT INTO flor (id, preu, color, floristeriaId) VALUES(?,?,?,1);"
+
+--afegir decoracio
+
+"INSERT INTO producte(id) VALUES(NULL);"
+"SELECT LAST_INSERT_ID();"
+"INSERT INTO decoracio (id, preu, material, floristeriaId) VALUES(?,?,?,1);"
+
+-- Stock
+SELECT * FROM arbre INNER JOIN producte ON arbre.id = producte.id WHERE producte.enStock = 1;
+SELECT * FROM flor INNER JOIN producte ON flor.id = producte.id WHERE producte.enStock = 1;
+SELECT * FROM decoracio INNER JOIN producte ON decoracio.id = producte.id WHERE producte.enStock = 1;
+
+-- retirar arbre, flor, decoracio
+UPDATE producte SET enStock = 0 WHERE ID = ?;
+
+-- Stock amb quantitats
+SELECT COUNT(*) FROM arbre INNER JOIN producte ON arbre.id = producte.id WHERE producte.enStock = 1;
+SELECT COUNT(*) FROM flor INNER JOIN producte ON flor.id = producte.id WHERE producte.enStock = 1;
+SELECT COUNT(*) FROM decoracio INNER JOIN producte ON decoracio.id = producte.id WHERE producte.enStock = 1;
+
+-- Valor stock
+SELECT SUM(preu) FROM arbre INNER JOIN producte ON arbre.id = producte.id WHERE producte.enStock = 1;
+SELECT SUM(preu) FROM flor INNER JOIN producte ON flor.id = producte.id WHERE producte.enStock = 1;
+SELECT SUM(preu) FROM decoracio INNER JOIN producte ON decoracio.id = producte.id WHERE producte.enStock = 1;
+
+-- Valor stock v2
+SELECT SUM(preu) FROM (
+    SELECT preu FROM arbre INNER JOIN producte ON arbre.id = producte.id WHERE producte.enStock = 1
+    UNION ALL
+    SELECT preu FROM flor INNER JOIN producte ON flor.id = producte.id WHERE producte.enStock = 1
+    UNION ALL
+    SELECT preu FROM decoracio INNER JOIN producte ON decoracio.id = producte.id WHERE producte.enStock = 1)AS combined_tables;
+
+-- crear Ticket
+INSERT INTO ticket (id, floristeriaId) VALUES (null, 1);
+
+-- Afegir arbre, Afegir flor, Afegir decoracio
+-- seleccionar id arbre, id flor, id decoracio
+UPDATE producte SET enStock = 0 WHERE ID = ?;
+INSERT INTO liniaticket (id, producteId, ticketId) VALUES (0,?,0);
+
+-- mostrar Tickets
+SELECT * FROM liniaTicket ORDER BY ticketId;
+
+-- diners guanyats
+SELECT SUM(preu) AS sumTotal
+FROM (
+    SELECT preu FROM arbre INNER JOIN liniaTicket ON arbre.id = liniaTicket.producteId
+    UNION ALL
+    SELECT preu FROM flor INNER JOIN liniaTicket ON flor.id = liniaTicket.producteId
+    UNION ALL
+    SELECT preu FROM decoracio INNER JOIN liniaTicket ON decoracio.id = liniaTicket.producteId
+) AS combined_tables;
+
+
+
+
+
+
+
